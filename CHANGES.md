@@ -1,4 +1,5 @@
 # UNRELEASED
+- [FIXED] Corrected `eslint` to be `devDependencies` instead of `dependencies`.
 
 # 0.16.0 (2017-10-31)
 - [UPGRADED] Use latest version of request@2.x.x.
