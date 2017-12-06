@@ -189,44 +189,44 @@ test('Data due on a paused feed', function(t) {
   function check_results() {
     console.error('rtt=%j HB=%j', couch.rtt(), HB)
     // We're testing against local couch so use Couch RTT to estimate how slow
-    // the local machine is.
-    var immediateTime 
+    // the local machine is and scale the "immediately" checks accordingly.
+    var immediateElapse = couch.rtt() / 6
     events.forEach(function(event, i) { console.error('Event %d: %j', i, event) })
 
     t.equal(events[0].event, 'change', 'First event was a change')
     t.ok(events[0].elapsed < couch.rtt(), 'First change came quickly')
 
     t.equal(events[1].event, 'pause', 'Second event was a pause, reacting to the first change')
-    t.ok(events[1].elapsed < 250, 'Pause called/fired immediately after the change')
+    t.ok(events[1].elapsed < immediateElapse, 'Pause called/fired immediately after the change')
 
     t.equal(events[2].event, 'timeout', 'Third event was the first timeout')
     t.ok(percent(events[2].elapsed, HB_DUE) > 95, 'First timeout fired when the heartbeat was due')
 
     t.equal(events[3].event, 'retry', 'Fourth event is a retry')
-    t.ok(events[3].elapsed < 250, 'First retry fires immediately after the first timeout')
+    t.ok(events[3].elapsed < immediateElapse, 'First retry fires immediately after the first timeout')
 
     t.equal(events[4].event, 'timeout', 'Fifth event was the second timeout')
     t.ok(percent(events[4].elapsed, HB_DUE) > 95, 'Second timeout fired when the heartbeat was due')
 
     t.equal(events[5].event, 'retry', 'Sixth event is a retry')
-    t.ok(events[5].elapsed < 250, 'Second retry fires immediately after the second timeout')
+    t.ok(events[5].elapsed < immediateElapse, 'Second retry fires immediately after the second timeout')
 
     t.equal(events[6].event, 'timeout', 'Seventh event was the third timeout')
     t.ok(percent(events[6].elapsed, HB_DUE) > 95, 'Third timeout fired when the heartbeat was due')
 
     t.equal(events[7].event, 'retry', 'Eighth event is a retry')
-    t.ok(events[7].elapsed < 250, 'Third retry fires immediately after the third timeout')
+    t.ok(events[7].elapsed < immediateElapse, 'Third retry fires immediately after the third timeout')
 
     t.equal(events[8].event, 'resume', 'Ninth event resumed the feed')
 
     t.equal(events[9].event, 'change', 'Tenth event was the second change')
-    t.ok(events[9].elapsed < 250, 'Second change came immediately after resume')
+    t.ok(events[9].elapsed < immediateElapse, 'Second change came immediately after resume')
 
     t.equal(events[10].event, 'change', 'Eleventh event was the third change')
-    t.ok(events[10].elapsed < 250, 'Third change came immediately after the second change')
+    t.ok(events[10].elapsed < immediateElapse, 'Third change came immediately after the second change')
 
     t.equal(events[11].event, 'stop', 'Twelfth event was the feed stopping')
-    t.ok(events[11].elapsed < 250, 'Stop event came immediately in response to the third change')
+    t.ok(events[11].elapsed < immediateElapse, 'Stop event came immediately in response to the third change')
 
     t.notOk(events[12], 'No thirteenth event')
 
