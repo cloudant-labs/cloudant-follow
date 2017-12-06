@@ -23,7 +23,7 @@ def setupNodeAndTest(version) {
       unstash name: 'built'
       // Run tests using creds
       withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'couchdb', usernameVariable: 'user', passwordVariable: 'pass']]) {
-        withEnv(["NVM_DIR=${env.HOME}/.nvm"]) {
+        withEnv(["NVM_DIR=${env.HOME}/.nvm", "TAP_TIMEOUT=300"]) {
           // Actions:
           //  1. Load NVM
           //  2. Install/use required Node.js version
