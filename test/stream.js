@@ -384,21 +384,26 @@ test('Feeds from couch', function(t) {
   var types = [ 'longpoll', 'continuous' ]
   types.forEach(function(type) {
     var feed = new follow.Changes({'feed':type})
-    setTimeout(check_changes, couch.rtt() * 2)
 
     var events = []
-    feed.on('data', function(data) { events.push(JSON.parse(data)) })
-    feed.on('end', function() { events.push('END') })
+    feed.on('data', function(data) {
+      events.push(JSON.parse(data))
+      if (type === 'continuous' && events.length === 3) {
+        // Disconnect the continous feed after 3 events
+        feed.destroy()
+        check_changes()
+      }
+    })
+    feed.on('end', function() {
+      events.push('END')
+      check_changes()
+    })
 
     var uri = couch.DB + '/_changes?feed=' + type
     var req = request({'uri':uri})
 
     // Compatibility with the old onResponse option.
     req.on('response', function(res) { on_response(null, res, res.body) })
-
-    // Disconnect the continuous feed after a while.
-    if(type == 'continuous')
-      setTimeout(function() { feed.destroy() }, couch.rtt() * 1)
 
     function on_response(er, res, body) {
       t.false(er, 'No problem fetching '+type+' feed: ' + uri)
