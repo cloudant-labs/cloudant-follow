@@ -164,7 +164,10 @@ test('Longpoll pause', function(t) {
   feed.once('data', function(data) {
     t.equal(data, '{"change":1}', 'First data event was the first change')
     feed.pause()
-    setTimeout(function() { feed.resume() }, 100)
+    setTimeout(function() {
+      feed.resume()
+      setTimeout(check_events, 50)
+     }, 100)
   })
 
   feed.on('end', function() {
@@ -172,7 +175,6 @@ test('Longpoll pause', function(t) {
     events.push('END')
   })
 
-  setTimeout(check_events, 150)
   feed.end(JSON.stringify(all))
 
   function check_events() {
@@ -257,10 +259,10 @@ test('Continuous pause', function(t) {
     function unpause() {
       t.equal(feed.readable, true, 'Feed is readable just before resume()')
       feed.resume()
+      setTimeout(check_events, 50)
     }
   })
 
-  setTimeout(check_events, 150)
   all.forEach(function(obj) {
     feed.write(JSON.stringify(obj))
     feed.write("\r\n")
@@ -315,15 +317,29 @@ test('Paused while heartbeats are arriving', function(t) {
     writes.push(result)
   }
 
-  setTimeout(function() { write('{"change":1}\n') }, 0)
-  setTimeout(function() { write('\n')             }, 100)
-  setTimeout(function() { write('\n')             }, 200)
-  setTimeout(function() { write('\n')             }, 300)
-  setTimeout(function() { write('\n')             }, 400)
-  setTimeout(function() { write('{"change":2}\n') }, 415)
-  setTimeout(function() { write('{"change":3}\n') }, 430)
+  setImmediate(function() {
+    write('{"change":1}\n')
+    setTimeout(function() {
+      write('\n')
+      setTimeout(function() {
+        write('\n')
+        setTimeout(function() {
+          write('\n')
+          setTimeout(function() {
+            write('\n')
+            setTimeout(function() {
+              write('{"change":2}\n')
+              setTimeout(function() {
+                write('{"change":3}\n')
+                check_events()
+              }, 15)
+            }, 15)
+          }, 100)
+        }, 100)
+      }, 100)
+    }, 100)
+  })
 
-  setTimeout(check_events, 500)
   function check_events() {
     t.ok(events[0].change   , 'First event was data (a change)')
     t.ok(events[1].heartbeat, 'Second event was a heartbeat')
