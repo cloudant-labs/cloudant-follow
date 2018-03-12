@@ -23,7 +23,7 @@
     "url": "git@github.com:cloudant-labs/cloudant-follow.git"
   },
   "dependencies": {
-    "request": "^2.83.0",
+    "request": "^2.84.0",
     "browser-request": "~0.3.0",
     "debug": "^3.0.0"
   },
