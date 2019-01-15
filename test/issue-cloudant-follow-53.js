@@ -16,8 +16,8 @@
 var tap = require('tap');
 var test = tap.test;
 
-var couch = require('../../couch');
-var follow = require('../../../api');
+var couch = require('./couch');
+var follow = require('../api');
 
 couch.setup(test);
 
@@ -49,7 +49,9 @@ test('Issue #53', function(t) {
       t.ok(saw.doc_third, 'Got the third document');
 
       feed.stop();
-      t.end();
     }
+  })
+  .on('stop', function() {
+    t.end();
   });
 });

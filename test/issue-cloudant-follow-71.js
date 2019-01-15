@@ -16,8 +16,8 @@
 var tap = require('tap');
 var test = tap.test;
 
-var couch = require('../../couch');
-var follow = require('../../../api');
+var couch = require('./couch');
+var follow = require('../api');
 
 couch.setup(test);
 
@@ -36,7 +36,12 @@ if (process.env.COUCHDB_VERSION && !process.env.COUCHDB_VERSION.startsWith('1'))
     feed.on('change', function(change) {
       t.ok(change.id === 'doc_third', 'Got the third document');
       feed.stop();
+    })
+    .on('error', function(err) {
+      t.error(err, 'There should be no errors.');
+    })
+    .on('stop', function() {
       t.end();
-    });
+    })
   });
 }
