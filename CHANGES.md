@@ -1,4 +1,5 @@
 # UNRELEASED
+- [FIXED] Multiple issues with `stop()` not actually stopping the feed.
 
 # 0.18.0 (2018-10-30)
 - [NEW] Support use of changes selector filter.

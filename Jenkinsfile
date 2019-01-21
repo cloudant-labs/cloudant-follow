@@ -30,14 +30,19 @@ def setupNodeAndTest(version, couchDbVersion='latest') {
             // Actions:
             //  1. Load NVM
             //  2. Install/use required Node.js version
-            //  3. Run tests
+            //  3. Wait for CouchDB
             sh """
               [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
               nvm install ${version}
               nvm use ${version}
               wget --retry-connrefused http://localhost:5984
-              npm test && npm run unreliable-feed-test
             """
+            // Create _global_changes DB if newer CouchDB versions
+            if (couchDbVersion != '1') {
+              sh 'curl -X PUT http://localhost:5984/_global_changes'
+            }
+            // Run tests
+            sh 'npm test && npm run unreliable-feed-test'
           }
         }
       }

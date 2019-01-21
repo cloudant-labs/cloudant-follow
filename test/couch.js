@@ -27,6 +27,7 @@ var follow = require('../api')
   , DB_UPDATES = process.env.db_updates || 'http://localhost:5984/_db_updates'
   , RTT = null
 
+const debug = require('debug')('follow:test');
 
 module.exports = { 'DB': DB
                  , 'DB_UPDATES': DB_UPDATES
@@ -106,11 +107,21 @@ function init_db(t, callback) {
 }
 
 function delete_db(t, callback) {
+  debug('delete_db deleting test database');
   request.del({uri: DB, json: true}, function (er, res) {
     t.false(er, 'Clear old test DB: ' + DB)
-    t.ok(!res.body.error)
-    callback()
-    })
+    if (er) {
+      callback(err);
+    };
+    if (res.statusCode === 404) {
+      debug('delete_db test database did not exist');
+      callback(null, false);
+    } else {
+      t.ok(!res.body.error)
+      debug('delete_db deleted test database');
+      callback(null, true);
+    }
+  });
 }
 
 function make_data(minimum_size, callback) {

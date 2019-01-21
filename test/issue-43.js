@@ -2,9 +2,9 @@ var tap = require('tap')
 var test = tap.test
 var util = require('util')
 
-var lib = require('../../lib')
-var couch = require('../couch')
-var follow = require('../../api')
+var lib = require('../lib')
+var couch = require('./couch')
+var follow = require('../api')
 
 couch.setup(test)
 
