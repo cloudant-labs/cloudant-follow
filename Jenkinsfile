@@ -21,20 +21,22 @@ def setupNodeAndTest(version, couchDbVersion='latest') {
       // Install CouchDB
       docker.image("couchdb:${couchDbVersion}").withRun('-p 5984:5984') {
         // Install NVM
-        sh 'wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.2/install.sh | bash'
+        sh 'wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash'
         // Unstash the built content
         unstash name: 'built'
         // Run tests using creds
         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'couchdb', usernameVariable: 'user', passwordVariable: 'pass']]) {
           withEnv(["NVM_DIR=${env.HOME}/.nvm", "TAP_TIMEOUT=300", "COUCHDB_VERSION=${couchDbVersion}"]) {
             // Actions:
-            //  1. Load NVM
-            //  2. Install/use required Node.js version
+            //  1. Install NVM
+            //  2. Install required Node.js version
             //  3. Wait for CouchDB
+            //  4. Put _global_changes DB for CouchDB > 1.x
+            //  5. Use required Node.js version
+            //  6. Run tests
             sh """
               [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
               nvm install ${version}
-              nvm use ${version}
               wget --retry-connrefused http://localhost:5984
             """
             // Create _global_changes DB if newer CouchDB versions
@@ -42,7 +44,11 @@ def setupNodeAndTest(version, couchDbVersion='latest') {
               sh 'curl -X PUT http://localhost:5984/_global_changes'
             }
             // Run tests
-            sh 'npm test && npm run unreliable-feed-test'
+            sh """
+              [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+              nvm use ${version}
+              npm test && npm run unreliable-feed-test
+            """
           }
         }
       }
