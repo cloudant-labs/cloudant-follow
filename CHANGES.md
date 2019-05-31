@@ -1,3 +1,7 @@
+# Unreleased
+
+- [FIXED] Removed inadvertent npm-cli-login dependency.
+
 # 0.18.1 (2019-01-22)
 - [FIXED] Multiple issues with `stop()` not actually stopping the feed.
 
