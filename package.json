@@ -46,7 +46,7 @@
   "main": "./api.js",
   "scripts": {
     "test": "eslint --ignore-path .eslintignore . && tap -j1 test/*.js",
-    "unreliable-feed-test": "tap -j1 --no-timeout test/unreliable_feed_test/unreliable_feed.js"
+    "unreliable-feed-test": "tap -j1 --no-timeout --only test/unreliable_feed_test/unreliable_feed.js"
   },
   "bin": {
     "follow": "./cli.js"

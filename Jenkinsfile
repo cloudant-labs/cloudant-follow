@@ -47,7 +47,7 @@ def setupNodeAndTest(version, couchDbVersion='latest') {
             sh """
               [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
               nvm use ${version}
-              npm test && npm run unreliable-feed-test
+              npm run unreliable-feed-test
             """
           }
         }

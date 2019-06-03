@@ -56,7 +56,7 @@ tap.afterEach(function(done) {
   done();
 });
 
-tap.test('Captures all changes in unreliable `/_changes` feed', { timeout: 300000 }, function(t) {
+tap.only('Captures all changes in unreliable `/_changes` feed', { timeout: 300000 }, function(t) {
   var actualChanges = [];
   var expectedChanges = [];
 
@@ -69,6 +69,12 @@ tap.test('Captures all changes in unreliable `/_changes` feed', { timeout: 30000
   feed.db = `http://localhost:${port}/foo`;
 
   feed
+    .on('retry', function(r) {
+      console.log(`Feed retry ${JSON.stringify(r)}`)
+    })
+    .on('restart', function(s) {
+      console.log(`Feed restart ${JSON.stringify(s)}`)
+    })
     .on('error', function(error) {
       t.fail(`Unexpected error: ${error}`);
     })
