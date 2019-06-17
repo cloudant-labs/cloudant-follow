@@ -1,6 +1,6 @@
 {
   "name": "cloudant-follow",
-  "version": "0.18.2",
+  "version": "0.18.3-SNAPSHOT",
   "author": {
     "name": "IBM Cloudant",
     "email": "support@cloudant.com"
