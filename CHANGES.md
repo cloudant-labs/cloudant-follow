@@ -1,4 +1,4 @@
-# Unreleased
+# 0.18.2 (2019-06-17)
 
 - [FIXED] Removed inadvertent npm-cli-login dependency.
 
