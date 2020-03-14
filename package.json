@@ -28,7 +28,7 @@
     "request": "^2.88.0"
   },
   "devDependencies": {
-    "commander": "^4.1.1",
+    "commander": "^5.0.0",
     "eslint": "^6.0.1",
     "eslint-config-semistandard": "^15.0.0",
     "eslint-config-standard": "^14.1.0",
