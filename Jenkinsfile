@@ -68,9 +68,9 @@ stage('Build') {
 stage('QA') {
   def axes = [
     // Using latest CouchDB @1.x:
-    CouchDb1LatestNode:   { setupNodeAndTest('node', '1') },
+    CouchDb1Node14:   { setupNodeAndTest('14', '1') },
     // Using latest CouchDB @2.X:
-    CouchDb2LatestNode:   { setupNodeAndTest('node', '2') }
+    CouchDb2Node14:   { setupNodeAndTest('14', '2') }
   ]
   parallel(axes) // Run the required axes in parallel
 }
